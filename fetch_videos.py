@@ -22,15 +22,25 @@ def seconds(iso):
     d, h, mi, s = [int(x or 0) for x in m.groups()] if m else (0, 0, 0, 0)
     return d * 86400 + h * 3600 + mi * 60 + s
 
-def game_name(title):
-    for m in re.finditer(r"【(.+?)】", title):
-        name = m.group(1).strip()
-        if re.fullmatch(r"(?:#|No\.?|Part|Ep\.?|第)?\s*[0-9０-９]+\s*(?:話|回|日目|章|夜|本目)?", name, re.I):
-            continue
-        if re.fullmatch(r"(?:前|中|後|完結|最終)(?:編|回|話)?|最終回|終", name):
-            continue
-        return name
-    return ""
+def clean(name):
+    return name.strip(" 　-－―ー~〜|｜/／")
+
+def game_name(title, vtype=""):
+    # 配信：一番後ろの【】がゲーム名（最初の【】は誰の視点か）
+    if vtype == "配信":
+        found = re.findall(r"【(.+?)】", title)
+        if len(found) >= 2:
+            return clean(found[-1])
+        return "雑談"
+    # 動画：一番後ろのハイフン以降がゲーム名
+    parts = re.split(r"\s*[-－―]\s*", title)
+    if len(parts) >= 2:
+        name = clean(parts[-1])
+        name = re.sub(r"^【(.+)】$", r"\1", name)  # 【】で囲まれていたら外す
+        if name:
+            return name
+    return "雑談"
+
 
 def to_jst(s):
     return datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=9)
