@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🧣 年間まとめ</title>
+  <title>🔫 ニート部 年間まとめ</title>
   <style>
     :root {
-      --bg: #e9f3fb; --main: #3b82c4; --main-light: #8fc3ea; --soft: #d6e8f6;
-      --text: #243447; --sub: #6b8197; --red: #d94452; --green: #4fa3a5;
+      --bg: #fbf6e6; --main: #d4a72c; --main-light: #e6c768; --soft: #f3e8bf;
+      --text: #3a3220; --sub: #8a7d5c; --red: #a8642a; --green: #7a8f4e;
     }
     body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: var(--bg); color: var(--text); }
     h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin: 0 0 8px; }
-    a { color: var(--main); text-decoration: none; font-size: 14px; }
+    a { color: var(--red); text-decoration: none; font-size: 14px; }
     .back { display: block; margin-bottom: 12px; }
     .years { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
     .chip { padding: 6px 14px; border: none; border-radius: 16px; background: #fff; color: var(--sub); font-size: 14px; }
@@ -38,7 +38,7 @@
   </style>
 </head>
 <body>
-  <h1>🧣 年間まとめ</h1>
+  <h1>🔫 ニート部 年間まとめ</h1>
   <a class="back" href="index.html">← 記録に戻る</a>
   <div class="years" id="years"></div>
   <div id="out">読み込み中...</div>
@@ -69,7 +69,6 @@
 
       if (!items.length) { document.getElementById("out").innerHTML = '<div class="empty">この年のデータはありません</div>'; return; }
 
-      // 月別
       const mh = Array(12).fill(0);
       lives.forEach(v => { mh[+v.date.slice(5, 7) - 1] += v.hours; });
       const mmax = Math.max(...mh, 1);
@@ -77,12 +76,10 @@
       const monthsHtml = mh.map((h, i) =>
         `<div class="mcol ${i === topM && h > 0 ? "top" : ""}"><i style="height:${h / mmax * 90}px"></i>${i + 1}</div>`).join("");
 
-      // ゲーム別
       const g = {};
-      lives.forEach(v => { const k = v.game || "その他"; g[k] = (g[k] || 0) + v.hours; });
+      lives.forEach(v => { const k = v.game || "雑談"; g[k] = (g[k] || 0) + v.hours; });
       const topG = Object.entries(g).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
-      // 曜日別（配信回数）
       const wn = ["月", "火", "水", "木", "金", "土", "日"];
       const wc = Array(7).fill(0);
       lives.forEach(v => {
@@ -91,7 +88,6 @@
       });
       const wEntries = wn.map((n, i) => [n + "曜", wc[i]]);
 
-      // 時間帯別（開始時刻）
       const tb = { "朝 5-11時": 0, "昼 11-17時": 0, "夜 17-23時": 0, "深夜 23-5時": 0 };
       lives.forEach(v => {
         if (!v.start) return;
@@ -102,7 +98,6 @@
         else tb["深夜 23-5時"]++;
       });
 
-      // 最長配信
       const longest = lives.slice().sort((a, b) => b.hours - a.hours)[0];
       const longestHtml = longest
         ? `<div class="longest">${fmtH(longest.hours)}（${esc(longest.date)}）<br><a href="${esc(longest.url)}" target="_blank">${esc(longest.title)}</a></div>`
@@ -117,7 +112,7 @@
           <div><b>${vids}本</b><span>動画</span></div>
           <div><b>${shorts}本</b><span>ショート</span></div>
         </div></div>
-        <div class="box"><h2>月ごとの配信時間（赤＝いちばん多い月：${topM + 1}月 ${fmtH(mh[topM])}）</h2><div class="months">${monthsHtml}</div></div>
+        <div class="box"><h2>月ごとの配信時間（茶＝いちばん多い月：${topM + 1}月 ${fmtH(mh[topM])}）</h2><div class="months">${monthsHtml}</div></div>
         <div class="box"><h2>よく遊んだゲーム TOP5</h2>${topG.length ? rows(topG, fmtH) : "配信データなし"}</div>
         <div class="box"><h2>いちばん長かった配信</h2>${longestHtml}</div>
         <div class="box"><h2>曜日ごとの配信回数</h2>${rows(wEntries, n => n + "回")}</div>
