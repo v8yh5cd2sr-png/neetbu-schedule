@@ -1,4 +1,5 @@
-import json, os, re, urllib.request, urllib.parse
+import json, os, re, unicodedata, urllib.request, urllib.parse
+from collections import Counter
 from datetime import datetime, timedelta
 
 API_KEY = os.environ["YOUTUBE_API_KEY"]
@@ -25,21 +26,31 @@ def seconds(iso):
 def clean(name):
     return name.strip(" 　-－―ー~〜|｜/／")
 
+def is_viewpoint(name):
+    return "視点" in name
+
 def game_name(title, vtype=""):
-    # 配信：一番後ろの【】がゲーム名（最初の【】は誰の視点か）
+    found = [clean(x) for x in re.findall(r"【(.+?)】", title)]
     if vtype == "配信":
-        found = re.findall(r"【(.+?)】", title)
-        if len(found) >= 2:
-            return clean(found[-1])
+        # 最後の【】がゲーム名。1つだけでも視点でなければゲーム名
+        if found and not is_viewpoint(found[-1]):
+            return found[-1]
         return "雑談"
-    # 動画：一番後ろのハイフン以降がゲーム名
+    # 動画：最後のハイフン以降がゲーム名
     parts = re.split(r"\s*[-－―]\s*", title)
     if len(parts) >= 2:
         name = clean(parts[-1])
-        name = re.sub(r"^【(.+)】$", r"\1", name)  # 【】で囲まれていたら外す
+        name = re.sub(r"^【(.+)】$", r"\1", name)
         if name:
             return name
+    # ハイフンがなければ、視点でない最初の【】
+    for f in found:
+        if not is_viewpoint(f):
+            return f
     return "雑談"
+
+def key(name):
+    return unicodedata.normalize("NFKC", name).lower().replace(" ", "")
 
 def to_jst(s):
     return datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=9)
@@ -102,10 +113,36 @@ for i in range(0, len(ids), 50):
         else:
             v["type"] = "動画"
 
-# ゲーム名を保存（game_fixed の動画は手で直した値を優先）
+# ---- ゲーム名 ----
+# 手動の表記ゆれ設定（任意）。{"aliases": {"統一名": ["別表記", ...]}}
+try:
+    with open("game_aliases.json", encoding="utf-8") as f:
+        cfg = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    cfg = {}
+alias = {}
+for main, names in cfg.get("aliases", {}).items():
+    for n in names:
+        alias[key(n)] = main
+    alias[key(main)] = main
+
+# 1) まずルールで名前を出す
 for v in videos:
     if not v.get("game_fixed"):
         v["game"] = game_name(v["title"], v.get("type", ""))
+
+# 2) 大文字小文字・全角半角・空白の違いを、いちばん多い書き方に統一
+count = Counter(v["game"] for v in videos if v.get("game"))
+best = {}
+for name, n in count.items():
+    k = key(name)
+    if k not in best or n > count[best[k]]:
+        best[k] = name
+for v in videos:
+    if v.get("game_fixed") or not v.get("game"):
+        continue
+    k = key(v["game"])
+    v["game"] = alias.get(k, best.get(k, v["game"]))
 
 videos.sort(key=lambda v: v.get("start") or v["date"], reverse=True)
 with open("videos.json", "w", encoding="utf-8") as f:
