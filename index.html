@@ -3,41 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🧣 らっだぁ 活動記録</title>
-  <div style="margin-bottom:10px"><a href="summary.html" style="color:var(--main);font-weight:normal">📊 年間まとめを見る →</a></div>
+  <title>🔫 ニート部 活動記録</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="らっだぁ">
-<meta name="theme-color" content="#3b82c4">
-<script>
-(function () {
-  var c = document.createElement("canvas");
-  c.width = c.height = 180;
-  var x = c.getContext("2d");
-  x.fillStyle = "#3b82c4"; x.fillRect(0, 0, 180, 180);   // 青い背景
-  x.fillStyle = "#d94452"; x.fillRect(0, 164, 180, 16);  // 赤の差し色
-  x.font = "110px sans-serif";
-  x.textAlign = "center"; x.textBaseline = "middle";
-  x.fillText("🧣", 90, 84);
-  var l = document.createElement("link");
-  l.rel = "apple-touch-icon";
-  l.href = c.toDataURL("image/png");
-  document.head.appendChild(l);
-})();
-</script>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ニート部">
+  <meta name="theme-color" content="#d4a72c">
+  <script>
+  (function () {
+    var c = document.createElement("canvas");
+    c.width = c.height = 180;
+    var x = c.getContext("2d");
+    x.fillStyle = "#d4a72c"; x.fillRect(0, 0, 180, 180);
+    x.fillStyle = "#a8642a"; x.fillRect(0, 164, 180, 16);
+    x.font = "110px sans-serif";
+    x.textAlign = "center"; x.textBaseline = "middle";
+    x.fillText("🔫", 90, 84);
+    var l = document.createElement("link");
+    l.rel = "apple-touch-icon";
+    l.href = c.toDataURL("image/png");
+    document.head.appendChild(l);
+  })();
+  </script>
   <style>
     /* ===== 色はここだけ変えればOK ===== */
     :root {
-      --bg: #e9f3fb;          /* 背景（薄い水色） */
+      --bg: #fbf6e6;          /* 背景 */
       --card: #ffffff;        /* カード */
-      --main: #3b82c4;        /* メインの青 */
-      --main-light: #8fc3ea;  /* 水色 */
-      --soft: #d6e8f6;        /* 淡い水色（ボタンの下地） */
-      --line: #cfe1f0;        /* 線 */
-      --text: #243447;        /* 文字 */
-      --sub: #6b8197;         /* 薄い文字 */
-      --red: #d94452;         /* 差し色（マフラーの赤） */
-      --green: #4fa3a5;       /* 配信 */
+      --main: #d4a72c;        /* メインの黄色（からし） */
+      --main-light: #e6c768;  /* 明るめの黄 */
+      --soft: #f3e8bf;        /* 淡い黄 */
+      --line: #eadfb5;        /* 線 */
+      --text: #3a3220;        /* 文字 */
+      --sub: #8a7d5c;         /* 薄い文字 */
+      --red: #a8642a;         /* 差し色（茶） */
+      --green: #7a8f4e;       /* 配信 */
     }
     body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: var(--bg); color: var(--text); }
     h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin-bottom: 14px; }
@@ -71,26 +70,26 @@
     .type { display: inline-block; font-size: 11px; background: var(--main); color: #fff; border-radius: 8px; padding: 2px 8px; margin-left: 6px; }
     .type.ショート { background: var(--red); }
     .type.配信 { background: var(--green); }
-    .game { display: inline-block; font-size: 11px; background: var(--soft); color: var(--main); border-radius: 8px; padding: 2px 8px; margin-left: 4px; }
+    .game { display: inline-block; font-size: 11px; background: var(--soft); color: var(--red); border-radius: 8px; padding: 2px 8px; margin-left: 4px; }
     a { color: var(--text); font-weight: bold; text-decoration: none; font-size: 14px; line-height: 1.4; }
     .more { display: block; width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--main); color: #fff; font-size: 14px; margin-bottom: 24px; }
     .empty { text-align: center; color: var(--sub); padding: 24px 0; }
 
     /* 月・週 共通のナビ */
     .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-    .nav button { width: 40px; height: 40px; border: none; border-radius: 50%; background: #fff; color: var(--main); font-size: 16px; }
+    .nav button { width: 40px; height: 40px; border: none; border-radius: 50%; background: #fff; color: var(--red); font-size: 16px; }
     .nav .month { font-weight: bold; font-size: 18px; text-align: center; }
     .nav .sub { display: block; font-size: 12px; color: var(--sub); font-weight: normal; }
-    .todaybtn { display: block; margin: 0 auto 8px; padding: 4px 16px; border: none; border-radius: 14px; background: #fff; color: var(--main); font-size: 12px; }
+    .todaybtn { display: block; margin: 0 auto 8px; padding: 4px 16px; border: none; border-radius: 14px; background: #fff; color: var(--red); font-size: 12px; }
     #monthLabel { cursor: pointer; }
 
     /* 月カレンダー */
     .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; background: #fff; padding: 6px; border-radius: 12px; }
     .dow { text-align: center; font-size: 12px; color: var(--sub); padding: 4px 0; }
     .dow.sun { color: var(--red); }
-    .cell { position: relative; aspect-ratio: 1 / 1; background: #f1f7fc; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+    .cell { position: relative; aspect-ratio: 1 / 1; background: #fbf8ee; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
     .cell img { width: 100%; flex: 1; min-height: 0; object-fit: cover; display: block; }
-    .cell .num { position: absolute; right: 3px; bottom: 1px; font-size: 14px; font-weight: bold; color: #a9c1d6; }
+    .cell .num { position: absolute; right: 3px; bottom: 1px; font-size: 14px; font-weight: bold; color: #cfc196; }
     .cell.has .num { color: #fff; text-shadow: 0 0 4px #000, 0 0 2px #000; }
     .cell.has { cursor: pointer; }
     #dayList { margin-top: 12px; }
@@ -101,10 +100,10 @@
     .stat { background: var(--main); color: #fff; border-radius: 10px; padding: 6px 12px; font-size: 13px; }
     .stat.light { background: var(--main-light); }
     .gamechips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-    .gamechips span { background: #fff; color: var(--main); border-radius: 14px; padding: 4px 10px; font-size: 12px; }
+    .gamechips span { background: #fff; color: var(--red); border-radius: 14px; padding: 4px 10px; font-size: 12px; }
     .picker { background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 10px; }
     .pickhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
-    .pickhead button { width: 34px; height: 34px; border: none; border-radius: 50%; background: var(--soft); color: var(--main); font-size: 14px; }
+    .pickhead button { width: 34px; height: 34px; border: none; border-radius: 50%; background: var(--soft); color: var(--red); font-size: 14px; }
     .pickgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .pm { border: none; border-radius: 10px; background: var(--soft); color: var(--text); padding: 8px 2px; font-size: 13px; line-height: 1.4; }
     .pm small { display: block; font-size: 11px; color: var(--sub); }
@@ -117,10 +116,10 @@
     .wkhead { border-bottom: 2px solid var(--line); margin-bottom: 4px; padding-bottom: 4px; }
     .wkhead div { text-align: center; font-size: 11px; color: var(--sub); line-height: 1.3; }
     .wkhead .d { font-size: 16px; font-weight: bold; color: var(--text); }
-    .wkhead .h { color: var(--main); }
+    .wkhead .h { color: var(--red); }
     .hours div { height: 36px; font-size: 10px; color: var(--sub); text-align: right; padding-right: 2px; box-sizing: border-box; }
     .daycol { position: relative; height: 864px; border-left: 1px dashed var(--line);
-      background: repeating-linear-gradient(to bottom, transparent 0, transparent 35px, #e3eef8 35px, #e3eef8 36px); }
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 35px, #f1e9cb 35px, #f1e9cb 36px); }
     .ev { position: absolute; box-sizing: border-box; border-radius: 6px; overflow: hidden; padding: 2px 3px;
       color: #fff; font-size: 10px; line-height: 1.25; text-decoration: none; font-weight: normal; }
     .ev b { display: block; font-size: 10px; }
@@ -136,11 +135,12 @@
   </style>
 </head>
 <body>
-  <h1>🧣 らっだぁ 活動記録</h1>
+  <h1>🔫 ニート部 活動記録</h1>
+  <div style="margin-bottom:10px"><a href="summary.html" style="color:var(--red);font-weight:normal">📊 年間まとめを見る →</a></div>
 
   <div class="deadlines" id="deadlines" style="display:none"></div>
 
-  <input class="search" id="search" type="search" placeholder="タイトルで検索（例：OneShot）">
+  <input class="search" id="search" type="search" placeholder="タイトルで検索">
 
   <div class="chips" id="chips"></div>
   <select class="gamesel" id="gameSel"><option value="">ゲーム：すべて</option></select>
@@ -414,7 +414,7 @@
           const w = 100 / lanes;
           const hh = Math.floor(sg.startMin / 60), mm = Math.round(sg.startMin % 60);
           const label = sg.v.game || sg.v.title;
-          const bg = `linear-gradient(rgba(40,90,150,.72),rgba(40,90,150,.72)),url('${thumbUrl(sg.v.url)}') center/cover`;
+          const bg = `linear-gradient(rgba(120,80,20,.72),rgba(120,80,20,.72)),url('${thumbUrl(sg.v.url)}') center/cover`;
           return `<a class="ev" href="${esc(sg.v.url)}" target="_blank"
             style="top:${top}px;height:${height}px;left:${sg.lane * w}%;width:calc(${w}% - 1px);background:${bg}">
             <b>${hh}:${pad(mm)}</b><span>${esc(label)}</span></a>`;
@@ -456,7 +456,7 @@
       const box = document.getElementById("gameList");
       if (!arr.length) { box.innerHTML = '<div class="empty">見つかりませんでした</div>'; return; }
       const maxH = Math.max(...arr.map(s => s.hours), 1);
-      box.innerHTML = arr.map(s => {
+      box.innerHTML = arr.slice(0, 200).map(s => {
         const period = s.first.slice(0, 7) === s.last.slice(0, 7) ? s.first.slice(0, 7) : `${s.first.slice(0, 7)} 〜 ${s.last.slice(0, 7)}`;
         const live = s.lives ? `配信 ${s.lives}回 ・ ${fmtH(s.hours)}` : "配信なし";
         return `<button class="gcard" data-g="${esc(s.name)}">
