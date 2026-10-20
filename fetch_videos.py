@@ -117,4 +117,4 @@ for v in videos:
     if g.lower() in ignore:
         g = ""
     v["game"] = alias.get(g.lower(), g)
-
+print(f"{added}本追加、全{len(videos)}本、うち配信時間つき{lives}本")
