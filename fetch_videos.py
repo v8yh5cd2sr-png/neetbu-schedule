@@ -41,7 +41,6 @@ def game_name(title, vtype=""):
             return name
     return "雑談"
 
-
 def to_jst(s):
     return datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=9)
 
@@ -103,9 +102,10 @@ for i in range(0, len(ids), 50):
         else:
             v["type"] = "動画"
 
+# ゲーム名を保存（game_fixed の動画は手で直した値を優先）
 for v in videos:
     if not v.get("game_fixed"):
-        v["game"] = game_name(v["title"])
+        v["game"] = game_name(v["title"], v.get("type", ""))
 
 videos.sort(key=lambda v: v.get("start") or v["date"], reverse=True)
 with open("videos.json", "w", encoding="utf-8") as f:
