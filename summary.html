@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🧣 年間まとめ</title>
+  <style>
+    :root {
+      --bg: #e9f3fb; --main: #3b82c4; --main-light: #8fc3ea; --soft: #d6e8f6;
+      --text: #243447; --sub: #6b8197; --red: #d94452; --green: #4fa3a5;
+    }
+    body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: var(--bg); color: var(--text); }
+    h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin: 0 0 8px; }
+    a { color: var(--main); text-decoration: none; font-size: 14px; }
+    .back { display: block; margin-bottom: 12px; }
+    .years { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip { padding: 6px 14px; border: none; border-radius: 16px; background: #fff; color: var(--sub); font-size: 14px; }
+    .chip.active { background: var(--main); color: #fff; }
+    .box { background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+    .box h2 { font-size: 14px; margin: 0 0 10px; color: var(--sub); }
+    .big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .big div { background: var(--soft); border-radius: 10px; padding: 10px; }
+    .big b { display: block; font-size: 22px; color: var(--main); }
+    .big span { font-size: 12px; color: var(--sub); }
+    .big .hot b { color: var(--red); }
+    .months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; align-items: end; height: 120px; }
+    .mcol { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; text-align: center; font-size: 10px; color: var(--sub); }
+    .mcol i { display: block; background: var(--main); border-radius: 3px 3px 0 0; min-height: 1px; }
+    .mcol.top i { background: var(--red); }
+    .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+    .row .n { width: 84px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .bar { flex: 1; height: 10px; background: var(--soft); border-radius: 5px; overflow: hidden; }
+    .row .bar i { display: block; height: 100%; background: var(--main); border-radius: 5px; }
+    .row .v { width: 64px; text-align: right; color: var(--sub); font-size: 12px; flex-shrink: 0; }
+    .row.first .bar i { background: var(--red); }
+    .longest { font-size: 14px; line-height: 1.5; }
+    .empty { text-align: center; color: var(--sub); padding: 24px 0; }
+  </style>
+</head>
+<body>
+  <h1>🧣 年間まとめ</h1>
+  <a class="back" href="index.html">← 記録に戻る</a>
+  <div class="years" id="years"></div>
+  <div id="out">読み込み中...</div>
+
+  <script>
+    function esc(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    function fmtH(h) { return (Math.round(h * 10) / 10) + "h"; }
+
+    let videos = [];
+    let year = "";
+
+    function rows(entries, unit) {
+      const max = Math.max(...entries.map(e => e[1]), 1);
+      return entries.map((e, i) =>
+        `<div class="row ${i === 0 ? "first" : ""}"><span class="n">${esc(e[0])}</span><span class="bar"><i style="width:${e[1] / max * 100}%"></i></span><span class="v">${unit(e[1])}</span></div>`
+      ).join("");
+    }
+
+    function render() {
+      const items = videos.filter(v => v.date.startsWith(year));
+      const lives = items.filter(v => v.hours);
+      const total = lives.reduce((s, v) => s + v.hours, 0);
+      const days = new Set(lives.map(v => v.date)).size;
+      const shorts = items.filter(v => v.type === "ショート").length;
+      const vids = items.filter(v => v.type === "動画").length;
+
+      if (!items.length) { document.getElementById("out").innerHTML = '<div class="empty">この年のデータはありません</div>'; return; }
+
+      // 月別
+      const mh = Array(12).fill(0);
+      lives.forEach(v => { mh[+v.date.slice(5, 7) - 1] += v.hours; });
+      const mmax = Math.max(...mh, 1);
+      const topM = mh.indexOf(Math.max(...mh));
+      const monthsHtml = mh.map((h, i) =>
+        `<div class="mcol ${i === topM && h > 0 ? "top" : ""}"><i style="height:${h / mmax * 90}px"></i>${i + 1}</div>`).join("");
+
+      // ゲーム別
+      const g = {};
+      lives.forEach(v => { const k = v.game || "その他"; g[k] = (g[k] || 0) + v.hours; });
+      const topG = Object.entries(g).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+      // 曜日別（配信回数）
+      const wn = ["月", "火", "水", "木", "金", "土", "日"];
+      const wc = Array(7).fill(0);
+      lives.forEach(v => {
+        const d = new Date(+v.date.slice(0, 4), +v.date.slice(5, 7) - 1, +v.date.slice(8, 10));
+        wc[(d.getDay() + 6) % 7]++;
+      });
+      const wEntries = wn.map((n, i) => [n + "曜", wc[i]]);
+
+      // 時間帯別（開始時刻）
+      const tb = { "朝 5-11時": 0, "昼 11-17時": 0, "夜 17-23時": 0, "深夜 23-5時": 0 };
+      lives.forEach(v => {
+        if (!v.start) return;
+        const h = +v.start.slice(11, 13);
+        if (h >= 5 && h < 11) tb["朝 5-11時"]++;
+        else if (h >= 11 && h < 17) tb["昼 11-17時"]++;
+        else if (h >= 17 && h < 23) tb["夜 17-23時"]++;
+        else tb["深夜 23-5時"]++;
+      });
+
+      // 最長配信
+      const longest = lives.slice().sort((a, b) => b.hours - a.hours)[0];
+      const longestHtml = longest
+        ? `<div class="longest">${fmtH(longest.hours)}（${esc(longest.date)}）<br><a href="${esc(longest.url)}" target="_blank">${esc(longest.title)}</a></div>`
+        : "配信データなし";
+
+      document.getElementById("out").innerHTML = `
+        <div class="box"><div class="big">
+          <div class="hot"><b>${fmtH(total)}</b><span>合計配信時間</span></div>
+          <div><b>${lives.length}回</b><span>配信回数</span></div>
+          <div><b>${days}日</b><span>配信した日数</span></div>
+          <div><b>${lives.length ? fmtH(total / lives.length) : "–"}</b><span>1回の平均</span></div>
+          <div><b>${vids}本</b><span>動画</span></div>
+          <div><b>${shorts}本</b><span>ショート</span></div>
+        </div></div>
+        <div class="box"><h2>月ごとの配信時間（赤＝いちばん多い月：${topM + 1}月 ${fmtH(mh[topM])}）</h2><div class="months">${monthsHtml}</div></div>
+        <div class="box"><h2>よく遊んだゲーム TOP5</h2>${topG.length ? rows(topG, fmtH) : "配信データなし"}</div>
+        <div class="box"><h2>いちばん長かった配信</h2>${longestHtml}</div>
+        <div class="box"><h2>曜日ごとの配信回数</h2>${rows(wEntries, n => n + "回")}</div>
+        <div class="box"><h2>配信を始める時間帯</h2>${rows(Object.entries(tb), n => n + "回")}</div>`;
+    }
+
+    function renderYears(list) {
+      const box = document.getElementById("years");
+      box.innerHTML = list.map(y => `<button class="chip ${y === year ? "active" : ""}" data-y="${y}">${y}年</button>`).join("");
+      box.querySelectorAll(".chip").forEach(b => {
+        b.onclick = () => { year = b.dataset.y; renderYears(list); render(); };
+      });
+    }
+
+    fetch("videos.json")
+      .then(res => res.json())
+      .then(data => {
+        videos = data;
+        const list = [...new Set(videos.map(v => v.date.slice(0, 4)))].sort().reverse();
+        year = list[0] || "";
+        renderYears(list);
+        render();
+      })
+      .catch(() => { document.getElementById("out").textContent = "videos.json を読み込めませんでした"; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🧣 らっだぁ 活動記録</title>
+  <div style="margin-bottom:10px"><a href="summary.html" style="color:var(--main);font-weight:normal">📊 年間まとめを見る →</a></div>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="らっだぁ">
+<meta name="theme-color" content="#3b82c4">
+<script>
+(function () {
+  var c = document.createElement("canvas");
+  c.width = c.height = 180;
+  var x = c.getContext("2d");
+  x.fillStyle = "#3b82c4"; x.fillRect(0, 0, 180, 180);   // 青い背景
+  x.fillStyle = "#d94452"; x.fillRect(0, 164, 180, 16);  // 赤の差し色
+  x.font = "110px sans-serif";
+  x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillText("🧣", 90, 84);
+  var l = document.createElement("link");
+  l.rel = "apple-touch-icon";
+  l.href = c.toDataURL("image/png");
+  document.head.appendChild(l);
+})();
+</script>
+  <style>
+    /* ===== 色はここだけ変えればOK ===== */
+    :root {
+      --bg: #e9f3fb;          /* 背景（薄い水色） */
+      --card: #ffffff;        /* カード */
+      --main: #3b82c4;        /* メインの青 */
+      --main-light: #8fc3ea;  /* 水色 */
+      --soft: #d6e8f6;        /* 淡い水色（ボタンの下地） */
+      --line: #cfe1f0;        /* 線 */
+      --text: #243447;        /* 文字 */
+      --sub: #6b8197;         /* 薄い文字 */
+      --red: #d94452;         /* 差し色（マフラーの赤） */
+      --green: #4fa3a5;       /* 配信 */
+    }
+    body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: var(--bg); color: var(--text); }
+    h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin-bottom: 14px; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .tab { flex: 1; padding: 8px 0; border: none; border-radius: 10px; background: var(--soft); color: var(--sub); font-size: 14px; }
+    .tab.active { background: var(--main); color: #fff; box-shadow: 0 3px 0 var(--red); }
+
+    /* 締切 */
+    .deadlines { background: #fff; border: 2px solid var(--soft); border-left: 5px solid var(--red); border-radius: 12px; padding: 8px 10px; margin-bottom: 12px; }
+    .dl { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .dl + .dl { border-top: 1px dashed var(--line); }
+    .dl .left { background: var(--main); color: #fff; border-radius: 8px; padding: 4px 10px; font-size: 13px; font-weight: bold; white-space: nowrap; }
+    .dl .left.soon { background: var(--red); }
+    .dl .t { font-size: 14px; font-weight: bold; color: var(--text); }
+    .dl .s { font-size: 11px; color: var(--sub); }
+
+    /* 検索・絞り込み */
+    .search { width: 100%; box-sizing: border-box; padding: 10px 14px; border: 2px solid var(--soft); border-radius: 12px; font-size: 16px; background: #fff; color: var(--text); margin-bottom: 8px; }
+    .search:focus { outline: none; border-color: var(--main); }
+    .chips { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .chip { padding: 6px 14px; border: none; border-radius: 16px; background: #fff; color: var(--sub); font-size: 13px; }
+    .chip.active { background: var(--main); color: #fff; }
+    .gamesel { width: 100%; box-sizing: border-box; padding: 8px 12px; border: 2px solid var(--soft); border-radius: 12px; font-size: 14px; background: #fff; color: var(--text); margin-bottom: 8px; }
+    .count { font-size: 12px; color: var(--sub); margin: 0 0 10px 4px; }
+
+    /* リスト */
+    .card { display: flex; gap: 12px; background: var(--card); border-radius: 12px; padding: 10px; margin-bottom: 12px; align-items: center; }
+    .thumb { width: 120px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; background: var(--soft); flex-shrink: 0; }
+    .info { min-width: 0; }
+    .date { font-size: 12px; color: var(--sub); margin-bottom: 4px; }
+    .type { display: inline-block; font-size: 11px; background: var(--main); color: #fff; border-radius: 8px; padding: 2px 8px; margin-left: 6px; }
+    .type.ショート { background: var(--red); }
+    .type.配信 { background: var(--green); }
+    .game { display: inline-block; font-size: 11px; background: var(--soft); color: var(--main); border-radius: 8px; padding: 2px 8px; margin-left: 4px; }
+    a { color: var(--text); font-weight: bold; text-decoration: none; font-size: 14px; line-height: 1.4; }
+    .more { display: block; width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--main); color: #fff; font-size: 14px; margin-bottom: 24px; }
+    .empty { text-align: center; color: var(--sub); padding: 24px 0; }
+
+    /* 月・週 共通のナビ */
+    .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .nav button { width: 40px; height: 40px; border: none; border-radius: 50%; background: #fff; color: var(--main); font-size: 16px; }
+    .nav .month { font-weight: bold; font-size: 18px; text-align: center; }
+    .nav .sub { display: block; font-size: 12px; color: var(--sub); font-weight: normal; }
+    .todaybtn { display: block; margin: 0 auto 8px; padding: 4px 16px; border: none; border-radius: 14px; background: #fff; color: var(--main); font-size: 12px; }
+    #monthLabel { cursor: pointer; }
+
+    /* 月カレンダー */
+    .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; background: #fff; padding: 6px; border-radius: 12px; }
+    .dow { text-align: center; font-size: 12px; color: var(--sub); padding: 4px 0; }
+    .dow.sun { color: var(--red); }
+    .cell { position: relative; aspect-ratio: 1 / 1; background: #f1f7fc; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+    .cell img { width: 100%; flex: 1; min-height: 0; object-fit: cover; display: block; }
+    .cell .num { position: absolute; right: 3px; bottom: 1px; font-size: 14px; font-weight: bold; color: #a9c1d6; }
+    .cell.has .num { color: #fff; text-shadow: 0 0 4px #000, 0 0 2px #000; }
+    .cell.has { cursor: pointer; }
+    #dayList { margin-top: 12px; }
+    #dayList h2 { font-size: 14px; margin: 0 0 8px; }
+
+    /* 合計・月ピッカー */
+    .stats { display: flex; gap: 8px; margin-bottom: 8px; }
+    .stat { background: var(--main); color: #fff; border-radius: 10px; padding: 6px 12px; font-size: 13px; }
+    .stat.light { background: var(--main-light); }
+    .gamechips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .gamechips span { background: #fff; color: var(--main); border-radius: 14px; padding: 4px 10px; font-size: 12px; }
+    .picker { background: #fff; border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+    .pickhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
+    .pickhead button { width: 34px; height: 34px; border: none; border-radius: 50%; background: var(--soft); color: var(--main); font-size: 14px; }
+    .pickgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .pm { border: none; border-radius: 10px; background: var(--soft); color: var(--text); padding: 8px 2px; font-size: 13px; line-height: 1.4; }
+    .pm small { display: block; font-size: 11px; color: var(--sub); }
+    .pm.cur { background: var(--main); color: #fff; }
+    .pm.cur small { color: #fff; }
+
+    /* 週表示 */
+    .week { background: #fff; border-radius: 12px; padding: 6px 4px 6px 4px; }
+    .wkrow { display: grid; grid-template-columns: 24px repeat(7, 1fr); gap: 2px; }
+    .wkhead { border-bottom: 2px solid var(--line); margin-bottom: 4px; padding-bottom: 4px; }
+    .wkhead div { text-align: center; font-size: 11px; color: var(--sub); line-height: 1.3; }
+    .wkhead .d { font-size: 16px; font-weight: bold; color: var(--text); }
+    .wkhead .h { color: var(--main); }
+    .hours div { height: 36px; font-size: 10px; color: var(--sub); text-align: right; padding-right: 2px; box-sizing: border-box; }
+    .daycol { position: relative; height: 864px; border-left: 1px dashed var(--line);
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 35px, #e3eef8 35px, #e3eef8 36px); }
+    .ev { position: absolute; box-sizing: border-box; border-radius: 6px; overflow: hidden; padding: 2px 3px;
+      color: #fff; font-size: 10px; line-height: 1.25; text-decoration: none; font-weight: normal; }
+    .ev b { display: block; font-size: 10px; }
+    .ev span { display: block; word-break: break-all; }
+
+    /* ゲーム別 */
+    .sortrow { display: flex; gap: 6px; margin-bottom: 10px; }
+    .gcard { display: block; width: 100%; text-align: left; border: none; background: #fff; border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
+    .gcard .gn { font-size: 15px; font-weight: bold; color: var(--text); margin-bottom: 4px; }
+    .gcard .gs { font-size: 12px; color: var(--sub); }
+    .gcard .bar { height: 6px; background: var(--soft); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+    .gcard .bar i { display: block; height: 100%; background: var(--red); border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>🧣 らっだぁ 活動記録</h1>
+
+  <div class="deadlines" id="deadlines" style="display:none"></div>
+
+  <input class="search" id="search" type="search" placeholder="タイトルで検索（例：OneShot）">
+
+  <div class="chips" id="chips"></div>
+  <select class="gamesel" id="gameSel"><option value="">ゲーム：すべて</option></select>
+  <p class="count" id="count"></p>
+
+  <div class="tabs">
+    <button class="tab active" id="tabList">リスト</button>
+    <button class="tab" id="tabMonth">月</button>
+    <button class="tab" id="tabWeek">週</button>
+    <button class="tab" id="tabGame">ゲーム</button>
+  </div>
+
+  <div id="listView"></div>
+
+  <div id="monthView" style="display:none">
+    <div class="nav">
+      <button id="prev">＜</button>
+      <div class="month" id="monthLabel"></div>
+      <button id="next">＞</button>
+    </div>
+    <div class="picker" id="picker" style="display:none"></div>
+    <div class="stats" id="monthStats"></div>
+    <div class="gamechips" id="monthGames"></div>
+    <div class="grid" id="grid"></div>
+    <div id="dayList"></div>
+  </div>
+
+  <div id="weekView" style="display:none">
+    <div class="nav">
+      <button id="wprev">＜</button>
+      <div class="month" id="weekLabel"></div>
+      <button id="wnext">＞</button>
+    </div>
+    <button class="todaybtn" id="wtoday">今週</button>
+    <div class="stats" id="weekStats"></div>
+    <div class="week" id="weekBox"></div>
+  </div>
+
+  <div id="gameView" style="display:none">
+    <div class="sortrow" id="sortRow"></div>
+    <div id="gameList"></div>
+  </div>
+
+  <script>
+    const HOUR_H = 36;
+    let videos = [];
+    let query = "";
+    let typeFilter = "";
+    let gameFilter = "";
+    let gameSort = "hours";
+    let view = "list";
+    let shown = 50;
+    let cur = new Date();
+    cur = new Date(cur.getFullYear(), cur.getMonth(), 1);
+    let pickerYear = cur.getFullYear();
+
+    function mondayOf(d) {
+      const off = (d.getDay() + 6) % 7;
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate() - off);
+    }
+    let weekStart = mondayOf(new Date());
+
+    function esc(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    function norm(s) { return s.normalize("NFKC").toLowerCase(); }
+    function fmtH(h) { return (Math.round(h * 10) / 10) + "h"; }
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    function filtered(ignoreGame) {
+      const words = norm(query).split(/\s+/).filter(Boolean);
+      return videos.filter(v => {
+        if (typeFilter && v.type !== typeFilter) return false;
+        if (!ignoreGame && gameFilter && v.game !== gameFilter) return false;
+        if (!words.length) return true;
+        const text = norm(v.title + " " + v.date + " " + v.type + " " + (v.game || ""));
+        return words.every(w => text.includes(w));
+      });
+    }
+
+    function thumbUrl(url) {
+      const m = url.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      return m ? `https://i.ytimg.com/vi/${m[1]}/mqdefault.jpg` : "";
+    }
+
+    function cardHtml(v) {
+      const game = v.game ? `<span class="game">${esc(v.game)}</span>` : "";
+      const hrs = v.hours ? ` ・ ${fmtH(v.hours)}` : "";
+      return `
+        <div class="card">
+          <a href="${esc(v.url)}" target="_blank">
+            <img class="thumb" src="${thumbUrl(v.url)}" loading="lazy" alt="" onerror="this.style.visibility='hidden'">
+          </a>
+          <div class="info">
+            <div class="date">${esc(v.date)}${hrs}<span class="type ${esc(v.type)}">${esc(v.type)}</span>${game}</div>
+            <a href="${esc(v.url)}" target="_blank">${esc(v.title)}</a>
+          </div>
+        </div>`;
+    }
+
+    // ---------- 締切 ----------
+    function parseDT(s) {
+      return new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10), +(s.slice(11, 13) || 0), +(s.slice(14, 16) || 0));
+    }
+    function renderDeadlines(list) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const items = list
+        .map(d => ({ ...d, at: parseDT(d.due) }))
+        .filter(d => d.at > now)
+        .sort((a, b) => a.at - b.at)
+        .slice(0, 3);
+      const box = document.getElementById("deadlines");
+      if (!items.length) { box.style.display = "none"; return; }
+      box.innerHTML = items.map(d => {
+        const dayOnly = new Date(d.at.getFullYear(), d.at.getMonth(), d.at.getDate());
+        const n = Math.round((dayOnly - today) / 86400000);
+        const left = n === 0 ? "今日" : `あと${n}日`;
+        const wd = ["日","月","火","水","木","金","土"][d.at.getDay()];
+        const sub = `${d.at.getMonth() + 1}/${d.at.getDate()}（${wd}） ${pad(d.at.getHours())}:${pad(d.at.getMinutes())}`;
+        return `<div class="dl"><span class="left ${n <= 3 ? "soon" : ""}">${left}</span><div><div class="t">${esc(d.title)}</div><div class="s">${sub}</div></div></div>`;
+      }).join("");
+      box.style.display = "";
+    }
+
+    // ---------- リスト ----------
+    function renderList() {
+      const list = filtered();
+      const box = document.getElementById("listView");
+      if (!list.length) {
+        box.innerHTML = '<div class="empty">見つかりませんでした</div>';
+        return;
+      }
+      let html = list.slice(0, shown).map(cardHtml).join("");
+      if (list.length > shown) {
+        html += `<button class="more" id="more">もっと見る（残り${list.length - shown}本）</button>`;
+      }
+      box.innerHTML = html;
+      const more = document.getElementById("more");
+      if (more) more.onclick = () => { shown += 50; renderList(); };
+    }
+
+    // ---------- 月表示 ----------
+    function renderPicker() {
+      const list = filtered();
+      const byMonth = {};
+      list.forEach(v => {
+        if (!v.hours) return;
+        const k = v.date.slice(0, 7);
+        byMonth[k] = (byMonth[k] || 0) + v.hours;
+      });
+      let html = `<div class="pickhead"><button id="pyprev">＜</button><span>${pickerYear}年</span><button id="pynext">＞</button></div><div class="pickgrid">`;
+      for (let m = 1; m <= 12; m++) {
+        const h = byMonth[`${pickerYear}-${pad(m)}`];
+        const isCur = pickerYear === cur.getFullYear() && m === cur.getMonth() + 1;
+        html += `<button class="pm ${isCur ? "cur" : ""}" data-m="${m}">${m}月<small>${h ? fmtH(h) : "–"}</small></button>`;
+      }
+      html += "</div>";
+      const box = document.getElementById("picker");
+      box.innerHTML = html;
+      document.getElementById("pyprev").onclick = () => { pickerYear--; renderPicker(); };
+      document.getElementById("pynext").onclick = () => { pickerYear++; renderPicker(); };
+      box.querySelectorAll(".pm").forEach(b => {
+        b.onclick = () => {
+          cur = new Date(pickerYear, Number(b.dataset.m) - 1, 1);
+          box.style.display = "none";
+          renderMonth();
+        };
+      });
+    }
+
+    function renderMonth() {
+      const list = filtered();
+      const y = cur.getFullYear(), m = cur.getMonth();
+      const prefix = `${y}-${pad(m + 1)}`;
+      const inMonth = list.filter(v => v.date.startsWith(prefix));
+      document.getElementById("monthLabel").innerHTML =
+        `${y}年${m + 1}月 ▾<span class="sub">${inMonth.length}本</span>`;
+
+      const lives = inMonth.filter(v => v.hours);
+      const total = lives.reduce((s, v) => s + v.hours, 0);
+      const byGame = {};
+      lives.forEach(v => {
+        const g = v.game || "その他";
+        byGame[g] = (byGame[g] || 0) + v.hours;
+      });
+      const top = Object.entries(byGame).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      document.getElementById("monthStats").innerHTML =
+        `<span class="stat">${lives.length} 回</span><span class="stat light">${fmtH(total)}</span>`;
+      document.getElementById("monthGames").innerHTML =
+        top.map(([g, h]) => `<span>${esc(g)} ${fmtH(h)}</span>`).join("");
+
+      if (document.getElementById("picker").style.display !== "none") {
+        pickerYear = y;
+        renderPicker();
+      }
+
+      const byDay = {};
+      inMonth.forEach(v => {
+        const d = Number(v.date.slice(8, 10));
+        (byDay[d] = byDay[d] || []).push(v);
+      });
+
+      const first = (new Date(y, m, 1).getDay() + 6) % 7;
+      const days = new Date(y, m + 1, 0).getDate();
+      let html = ["月","火","水","木","金","土","日"].map((d, i) => `<div class="dow ${i === 6 ? "sun" : ""}">${d}</div>`).join("");
+      for (let i = 0; i < first; i++) html += "<div></div>";
+      for (let d = 1; d <= days; d++) {
+        const items = byDay[d] || [];
+        const imgs = items.slice(0, 4).map(v => `<img src="${thumbUrl(v.url)}" loading="lazy" alt="">`).join("");
+        html += `<div class="cell ${items.length ? "has" : ""}" data-day="${d}">${imgs}<span class="num">${d}</span></div>`;
+      }
+      document.getElementById("grid").innerHTML = html;
+      document.getElementById("dayList").innerHTML = "";
+
+      document.querySelectorAll(".cell.has").forEach(el => {
+        el.addEventListener("click", () => {
+          const d = Number(el.dataset.day);
+          document.getElementById("dayList").innerHTML =
+            `<h2>${m + 1}月${d}日</h2>` + byDay[d].map(cardHtml).join("");
+        });
+      });
+    }
+
+    // ---------- 週表示 ----------
+    function renderWeek() {
+      const lives = filtered().filter(v => v.start && v.end);
+      const names = ["月","火","水","木","金","土","日"];
+      const ws = weekStart;
+      const we = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate() + 6);
+      document.getElementById("weekLabel").innerHTML =
+        `${ws.getMonth() + 1}/${ws.getDate()} - ${we.getMonth() + 1}/${we.getDate()}<span class="sub">${ws.getFullYear()}年</span>`;
+
+      const liveIds = new Set();
+      let totalHours = 0;
+      let headHtml = '<div></div>';
+      let colsHtml = '<div class="hours">' + Array.from({ length: 24 }, (_, h) => `<div>${h}</div>`).join("") + "</div>";
+
+      for (let i = 0; i < 7; i++) {
+        const dayStart = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate() + i);
+        const dayEnd = new Date(ws.getFullYear(), ws.getMonth(), ws.getDate() + i + 1);
+        const segs = [];
+        let dayHours = 0;
+
+        lives.forEach(v => {
+          const s = parseDT(v.start), e = parseDT(v.end);
+          if (e <= dayStart || s >= dayEnd) return;
+          const ss = s > dayStart ? s : dayStart;
+          const ee = e < dayEnd ? e : dayEnd;
+          const startMin = (ss - dayStart) / 60000;
+          const durMin = (ee - ss) / 60000;
+          dayHours += durMin / 60;
+          liveIds.add(v.url);
+          segs.push({ v, startMin, durMin, endMin: startMin + durMin });
+        });
+        totalHours += dayHours;
+
+        segs.sort((a, b) => a.startMin - b.startMin);
+        const laneEnds = [];
+        segs.forEach(sg => {
+          let lane = laneEnds.findIndex(end => end <= sg.startMin);
+          if (lane === -1) { lane = laneEnds.length; laneEnds.push(0); }
+          laneEnds[lane] = Math.max(sg.endMin, sg.startMin + 30);
+          sg.lane = lane;
+        });
+        const lanes = Math.max(1, laneEnds.length);
+
+        const evHtml = segs.map(sg => {
+          const top = sg.startMin / 60 * HOUR_H;
+          const height = Math.max(sg.durMin / 60 * HOUR_H, 18);
+          const w = 100 / lanes;
+          const hh = Math.floor(sg.startMin / 60), mm = Math.round(sg.startMin % 60);
+          const label = sg.v.game || sg.v.title;
+          const bg = `linear-gradient(rgba(40,90,150,.72),rgba(40,90,150,.72)),url('${thumbUrl(sg.v.url)}') center/cover`;
+          return `<a class="ev" href="${esc(sg.v.url)}" target="_blank"
+            style="top:${top}px;height:${height}px;left:${sg.lane * w}%;width:calc(${w}% - 1px);background:${bg}">
+            <b>${hh}:${pad(mm)}</b><span>${esc(label)}</span></a>`;
+        }).join("");
+
+        const isSun = i === 6;
+        headHtml += `<div><div>${names[i]}</div><div class="d"${isSun ? ' style="color:var(--red)"' : ""}>${dayStart.getDate()}</div><div class="h">${dayHours ? fmtH(dayHours) : "&nbsp;"}</div></div>`;
+        colsHtml += `<div class="daycol">${evHtml}</div>`;
+      }
+
+      document.getElementById("weekStats").innerHTML =
+        `<span class="stat">${liveIds.size} 回</span><span class="stat light">${fmtH(totalHours)}</span>`;
+      document.getElementById("weekBox").innerHTML =
+        `<div class="wkrow wkhead">${headHtml}</div><div class="wkrow">${colsHtml}</div>`;
+    }
+
+    // ---------- ゲーム別 ----------
+    function renderGames() {
+      const list = filtered(true);
+      const stats = {};
+      list.forEach(v => {
+        if (!v.game) return;
+        const s = stats[v.game] || (stats[v.game] = { name: v.game, count: 0, lives: 0, hours: 0, first: v.date, last: v.date });
+        s.count++;
+        if (v.hours) { s.lives++; s.hours += v.hours; }
+        if (v.date < s.first) s.first = v.date;
+        if (v.date > s.last) s.last = v.date;
+      });
+      const arr = Object.values(stats).sort((a, b) =>
+        gameSort === "hours" ? (b.hours - a.hours) || (b.count - a.count) : (b.count - a.count) || (b.hours - a.hours));
+
+      document.getElementById("sortRow").innerHTML =
+        `<button class="chip ${gameSort === "hours" ? "active" : ""}" data-s="hours">配信時間順</button>` +
+        `<button class="chip ${gameSort === "count" ? "active" : ""}" data-s="count">本数順</button>`;
+      document.querySelectorAll("#sortRow .chip").forEach(b => {
+        b.onclick = () => { gameSort = b.dataset.s; renderGames(); };
+      });
+
+      const box = document.getElementById("gameList");
+      if (!arr.length) { box.innerHTML = '<div class="empty">見つかりませんでした</div>'; return; }
+      const maxH = Math.max(...arr.map(s => s.hours), 1);
+      box.innerHTML = arr.map(s => {
+        const period = s.first.slice(0, 7) === s.last.slice(0, 7) ? s.first.slice(0, 7) : `${s.first.slice(0, 7)} 〜 ${s.last.slice(0, 7)}`;
+        const live = s.lives ? `配信 ${s.lives}回 ・ ${fmtH(s.hours)}` : "配信なし";
+        return `<button class="gcard" data-g="${esc(s.name)}">
+          <div class="gn">${esc(s.name)}</div>
+          <div class="gs">${s.count}本 ・ ${live}</div>
+          <div class="gs">${period}</div>
+          <div class="bar"><i style="width:${s.hours / maxH * 100}%"></i></div>
+        </button>`;
+      }).join("");
+      box.querySelectorAll(".gcard").forEach(b => {
+        b.onclick = () => {
+          gameFilter = b.dataset.g;
+          document.getElementById("gameSel").value = gameFilter;
+          shown = 50;
+          show("list");
+        };
+      });
+    }
+
+    // ---------- 共通 ----------
+    function updateCount() {
+      const n = filtered().length;
+      const active = query.trim() || typeFilter || gameFilter;
+      document.getElementById("count").textContent =
+        active ? `${n}件ヒット（全${videos.length}本）` : `全${videos.length}本`;
+    }
+
+    function renderChips() {
+      const types = ["", "動画", "ショート", "配信"];
+      const box = document.getElementById("chips");
+      box.innerHTML = types.map(t =>
+        `<button class="chip ${typeFilter === t ? "active" : ""}" data-t="${t}">${t || "すべて"}</button>`
+      ).join("");
+      box.querySelectorAll(".chip").forEach(b => {
+        b.onclick = () => { typeFilter = b.dataset.t; shown = 50; renderChips(); render(); };
+      });
+    }
+
+    function buildGameSelect() {
+      const counts = {};
+      videos.forEach(v => { if (v.game) counts[v.game] = (counts[v.game] || 0) + 1; });
+      const names = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+      const sel = document.getElementById("gameSel");
+      sel.innerHTML = '<option value="">ゲーム：すべて</option>' +
+        names.map(n => `<option value="${esc(n)}">${esc(n)}（${counts[n]}）</option>`).join("");
+      sel.onchange = () => { gameFilter = sel.value; shown = 50; render(); };
+    }
+
+    function render() {
+      updateCount();
+      if (view === "list") renderList();
+      else if (view === "month") renderMonth();
+      else if (view === "week") renderWeek();
+      else renderGames();
+    }
+
+    function show(v) {
+      view = v;
+      ["list", "month", "week", "game"].forEach(n => {
+        document.getElementById(n + "View").style.display = v === n ? "" : "none";
+        document.getElementById("tab" + n[0].toUpperCase() + n.slice(1)).classList.toggle("active", v === n);
+      });
+      render();
+    }
+
+    document.getElementById("search").addEventListener("input", e => {
+      query = e.target.value;
+      shown = 50;
+      render();
+    });
+    document.getElementById("tabList").onclick = () => show("list");
+    document.getElementById("tabMonth").onclick = () => show("month");
+    document.getElementById("tabWeek").onclick = () => show("week");
+    document.getElementById("tabGame").onclick = () => show("game");
+    document.getElementById("prev").onclick = () => { cur = new Date(cur.getFullYear(), cur.getMonth() - 1, 1); renderMonth(); };
+    document.getElementById("next").onclick = () => { cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1); renderMonth(); };
+    document.getElementById("monthLabel").onclick = () => {
+      const p = document.getElementById("picker");
+      if (p.style.display === "none") { pickerYear = cur.getFullYear(); renderPicker(); p.style.display = ""; }
+      else p.style.display = "none";
+    };
+    document.getElementById("wprev").onclick = () => { weekStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() - 7); renderWeek(); };
+    document.getElementById("wnext").onclick = () => { weekStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 7); renderWeek(); };
+    document.getElementById("wtoday").onclick = () => { weekStart = mondayOf(new Date()); renderWeek(); };
+
+    fetch("deadlines.json")
+      .then(res => res.ok ? res.json() : [])
+      .then(renderDeadlines)
+      .catch(() => {});
+
+    fetch("videos.json")
+      .then(res => res.json())
+      .then(data => {
+        videos = data.sort((a, b) => (b.start || b.date).localeCompare(a.start || a.date));
+        renderChips();
+        buildGameSelect();
+        render();
+      })
+      .catch(() => {
+        document.getElementById("listView").textContent = "videos.json を読み込めませんでした";
+      });
+  </script>
+</body>
+</html>
