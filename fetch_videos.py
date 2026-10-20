@@ -4,9 +4,8 @@ from datetime import datetime, timedelta
 API_KEY = os.environ["YOUTUBE_API_KEY"]
 CHANNEL_ID = "UCFQu6Q-9LAS3KoEuRDNkzGA"
 PLAYLIST_ID = "UU" + CHANNEL_ID[2:]
-print("PLAYLIST_ID =", PLAYLIST_ID)
 MAX_PAGES = 100
-SHORT_SECONDS = 60  # この秒数以下ならショート扱い
+SHORT_SECONDS = 60
 
 def vid_id(url):
     m = re.search(r"(?:v=|youtu\.be/)([\w-]{11})", url)
@@ -34,11 +33,10 @@ def game_name(title):
     return ""
 
 def to_jst(s):
-    # YouTubeの時刻(UTC)を日本時間に直す。小数秒があっても動くようにする
-    t = datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=9)
-    return t
+    return datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=9)
 
-# 今ある記録を読み込む
+print("チャンネルID:", CHANNEL_ID, "/ 再生リスト:", PLAYLIST_ID)
+
 try:
     with open("videos.json", encoding="utf-8") as f:
         videos = json.load(f)
@@ -46,7 +44,6 @@ except FileNotFoundError:
     videos = []
 known = {vid_id(v["url"]) for v in videos}
 
-# 1) 新しい動画を追加（全ページ）
 added = 0
 page_token = None
 for page in range(MAX_PAGES):
@@ -54,6 +51,7 @@ for page in range(MAX_PAGES):
     if page_token:
         params["pageToken"] = page_token
     data = api("playlistItems", params)
+    print(f"ページ{page + 1}: {len(data.get('items', []))}件取得")
     for item in data["items"]:
         s = item["snippet"]
         vid = s["resourceId"]["videoId"]
@@ -72,15 +70,11 @@ for page in range(MAX_PAGES):
     if not page_token:
         break
 
-# 2) 種類と配信時間を判定（50本ずつ詳細を取得）
 by_id = {vid_id(v["url"]): v for v in videos if vid_id(v["url"])}
 ids = list(by_id)
 for i in range(0, len(ids), 50):
     chunk = ids[i:i + 50]
-    data = api("videos", {
-        "part": "contentDetails,liveStreamingDetails",
-        "id": ",".join(chunk),
-    })
+    data = api("videos", {"part": "contentDetails,liveStreamingDetails", "id": ",".join(chunk)})
     for item in data["items"]:
         v = by_id[item["id"]]
         live = item.get("liveStreamingDetails")
@@ -89,7 +83,7 @@ for i in range(0, len(ids), 50):
             if live.get("actualStartTime"):
                 st = to_jst(live["actualStartTime"])
                 v["start"] = st.strftime("%Y-%m-%dT%H:%M")
-                v["date"] = st.strftime("%Y-%m-%d")  # 配信は開始日を日付にする
+                v["date"] = st.strftime("%Y-%m-%d")
                 if live.get("actualEndTime"):
                     en = to_jst(live["actualEndTime"])
                     v["end"] = en.strftime("%Y-%m-%dT%H:%M")
@@ -98,22 +92,13 @@ for i in range(0, len(ids), 50):
             v["type"] = "ショート"
         else:
             v["type"] = "動画"
-# 3) ゲーム名を保存（表記ゆれ統一・除外つき。game_fixed の動画は触らない）
-try:
-    with open("game_aliases.json", encoding="utf-8") as f:
-        cfg = json.load(f)
-except FileNotFoundError:
-    cfg = {}
-alias = {}
-for main, names in cfg.get("aliases", {}).items():
-    for n in names:
-        alias[n.lower()] = main
-ignore = {n.lower() for n in cfg.get("ignore", [])}
 
 for v in videos:
-    if v.get("game_fixed"):
-        continue
-    g = game_name(v["title"])
-    if g.lower() in ignore:
-        g = ""
-    v["game"] = alias.get(g.lower(), g)
+    if not v.get("game_fixed"):
+        v["game"] = game_name(v["title"])
+
+videos.sort(key=lambda v: v.get("start") or v["date"], reverse=True)
+with open("videos.json", "w", encoding="utf-8") as f:
+    json.dump(videos, f, ensure_ascii=False, indent=2)
+lives = sum(1 for v in videos if v.get("start"))
+print(f"{added}本追加、全{len(videos)}本、うち配信時間つき{lives}本")
