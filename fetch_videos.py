@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 API_KEY = os.environ["YOUTUBE_API_KEY"]
 CHANNEL_ID = "UCFQu6Q-9LAS3KoEuRDNkzGA"
 PLAYLIST_ID = "UU" + CHANNEL_ID[2:]
+print("PLAYLIST_ID =", PLAYLIST_ID)
 MAX_PAGES = 100
 SHORT_SECONDS = 60  # この秒数以下ならショート扱い
 
