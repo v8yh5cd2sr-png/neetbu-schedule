@@ -2,7 +2,7 @@ import json, os, re, urllib.request, urllib.parse
 from datetime import datetime, timedelta
 
 API_KEY = os.environ["YOUTUBE_API_KEY"]
-CHANNEL_ID = "UClNdVSK1uy2xFHTaXZYXopw"
+CHANNEL_ID = "UCFQu6Q-9LAS3KoEuRDNkzGA"
 PLAYLIST_ID = "UU" + CHANNEL_ID[2:]
 MAX_PAGES = 100
 SHORT_SECONDS = 60  # この秒数以下ならショート扱い
