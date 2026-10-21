@@ -25,18 +25,17 @@
   })();
   </script>
   <style>
-    /* ===== 色はここだけ変えればOK ===== */
     :root {
-      --bg: #fbf6e6;          /* 背景 */
-      --card: #ffffff;        /* カード */
-      --main: #d4a72c;        /* メインの黄色（からし） */
-      --main-light: #e6c768;  /* 明るめの黄 */
-      --soft: #f3e8bf;        /* 淡い黄 */
-      --line: #eadfb5;        /* 線 */
-      --text: #3a3220;        /* 文字 */
-      --sub: #8a7d5c;         /* 薄い文字 */
-      --red: #a8642a;         /* 差し色（茶） */
-      --green: #7a8f4e;       /* 配信 */
+      --bg: #fbf6e6;
+      --card: #ffffff;
+      --main: #d4a72c;
+      --main-light: #e6c768;
+      --soft: #f3e8bf;
+      --line: #eadfb5;
+      --text: #3a3220;
+      --sub: #8a7d5c;
+      --red: #a8642a;
+      --green: #7a8f4e;
     }
     body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: var(--bg); color: var(--text); }
     h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin-bottom: 14px; }
@@ -44,7 +43,6 @@
     .tab { flex: 1; padding: 8px 0; border: none; border-radius: 10px; background: var(--soft); color: var(--sub); font-size: 14px; }
     .tab.active { background: var(--main); color: #fff; box-shadow: 0 3px 0 var(--red); }
 
-    /* 締切 */
     .deadlines { background: #fff; border: 2px solid var(--soft); border-left: 5px solid var(--red); border-radius: 12px; padding: 8px 10px; margin-bottom: 12px; }
     .dl { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
     .dl + .dl { border-top: 1px dashed var(--line); }
@@ -53,7 +51,6 @@
     .dl .t { font-size: 14px; font-weight: bold; color: var(--text); }
     .dl .s { font-size: 11px; color: var(--sub); }
 
-    /* 検索・絞り込み */
     .search { width: 100%; box-sizing: border-box; padding: 10px 14px; border: 2px solid var(--soft); border-radius: 12px; font-size: 16px; background: #fff; color: var(--text); margin-bottom: 8px; }
     .search:focus { outline: none; border-color: var(--main); }
     .chips { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
@@ -62,7 +59,6 @@
     .gamesel { width: 100%; box-sizing: border-box; padding: 8px 12px; border: 2px solid var(--soft); border-radius: 12px; font-size: 14px; background: #fff; color: var(--text); margin-bottom: 8px; }
     .count { font-size: 12px; color: var(--sub); margin: 0 0 10px 4px; }
 
-    /* リスト */
     .card { display: flex; gap: 12px; background: var(--card); border-radius: 12px; padding: 10px; margin-bottom: 12px; align-items: center; }
     .thumb { width: 120px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; background: var(--soft); flex-shrink: 0; }
     .info { min-width: 0; }
@@ -75,7 +71,6 @@
     .more { display: block; width: 100%; padding: 12px; border: none; border-radius: 12px; background: var(--main); color: #fff; font-size: 14px; margin-bottom: 24px; }
     .empty { text-align: center; color: var(--sub); padding: 24px 0; }
 
-    /* 月・週 共通のナビ */
     .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .nav button { width: 40px; height: 40px; border: none; border-radius: 50%; background: #fff; color: var(--red); font-size: 16px; }
     .nav .month { font-weight: bold; font-size: 18px; text-align: center; }
@@ -83,7 +78,6 @@
     .todaybtn { display: block; margin: 0 auto 8px; padding: 4px 16px; border: none; border-radius: 14px; background: #fff; color: var(--red); font-size: 12px; }
     #monthLabel { cursor: pointer; }
 
-    /* 月カレンダー */
     .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; background: #fff; padding: 6px; border-radius: 12px; }
     .dow { text-align: center; font-size: 12px; color: var(--sub); padding: 4px 0; }
     .dow.sun { color: var(--red); }
@@ -95,7 +89,6 @@
     #dayList { margin-top: 12px; }
     #dayList h2 { font-size: 14px; margin: 0 0 8px; }
 
-    /* 合計・月ピッカー */
     .stats { display: flex; gap: 8px; margin-bottom: 8px; }
     .stat { background: var(--main); color: #fff; border-radius: 10px; padding: 6px 12px; font-size: 13px; }
     .stat.light { background: var(--main-light); }
@@ -110,7 +103,6 @@
     .pm.cur { background: var(--main); color: #fff; }
     .pm.cur small { color: #fff; }
 
-    /* 週表示 */
     .week { background: #fff; border-radius: 12px; padding: 6px 4px 6px 4px; }
     .wkrow { display: grid; grid-template-columns: 24px repeat(7, 1fr); gap: 2px; }
     .wkhead { border-bottom: 2px solid var(--line); margin-bottom: 4px; padding-bottom: 4px; }
@@ -125,7 +117,6 @@
     .ev b { display: block; font-size: 10px; }
     .ev span { display: block; word-break: break-all; }
 
-    /* ゲーム別 */
     .sortrow { display: flex; gap: 6px; margin-bottom: 10px; }
     .gcard { display: block; width: 100%; text-align: left; border: none; background: #fff; border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
     .gcard .gn { font-size: 15px; font-weight: bold; color: var(--text); margin-bottom: 4px; }
@@ -137,7 +128,6 @@
 <body>
   <h1>🔫 ニート部 活動記録</h1>
   <div style="margin-bottom:10px"><a href="summary.html" style="color:var(--red);font-weight:normal">📊 年間まとめを見る →</a></div>
-  
   <div style="margin-bottom:10px"><a href="members.html" style="color:var(--red);font-weight:normal">👥 メンバーを見る →</a></div>
 
   <div class="deadlines" id="deadlines" style="display:none"></div>
@@ -231,19 +221,19 @@
     function cardHtml(v) {
       const game = v.game ? `<span class="game">${esc(v.game)}</span>` : "";
       const hrs = v.hours ? ` ・ ${fmtH(v.hours)}` : "";
+      const views = v.views != null ? ` ・ ${v.views.toLocaleString()}回` : "";
       return `
         <div class="card">
           <a href="${esc(v.url)}" target="_blank">
             <img class="thumb" src="${thumbUrl(v.url)}" loading="lazy" alt="" onerror="this.style.visibility='hidden'">
           </a>
           <div class="info">
-            <div class="date">${esc(v.date)}${hrs}<span class="type ${esc(v.type)}">${esc(v.type)}</span>${game}</div>
+            <div class="date">${esc(v.date)}${hrs}${views}<span class="type ${esc(v.type)}">${esc(v.type)}</span>${game}</div>
             <a href="${esc(v.url)}" target="_blank">${esc(v.title)}</a>
           </div>
         </div>`;
     }
 
-    // ---------- 締切 ----------
     function parseDT(s) {
       return new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10), +(s.slice(11, 13) || 0), +(s.slice(14, 16) || 0));
     }
@@ -268,7 +258,6 @@
       box.style.display = "";
     }
 
-    // ---------- リスト ----------
     function renderList() {
       const list = filtered();
       const box = document.getElementById("listView");
@@ -285,7 +274,6 @@
       if (more) more.onclick = () => { shown += 50; renderList(); };
     }
 
-    // ---------- 月表示 ----------
     function renderPicker() {
       const list = filtered();
       const byMonth = {};
@@ -367,7 +355,6 @@
       });
     }
 
-    // ---------- 週表示 ----------
     function renderWeek() {
       const lives = filtered().filter(v => v.start && v.end);
       const names = ["月","火","水","木","金","土","日"];
@@ -433,7 +420,6 @@
         `<div class="wkrow wkhead">${headHtml}</div><div class="wkrow">${colsHtml}</div>`;
     }
 
-    // ---------- ゲーム別 ----------
     function renderGames() {
       const list = filtered(true);
       const stats = {};
@@ -478,7 +464,6 @@
       });
     }
 
-    // ---------- 共通 ----------
     function updateCount() {
       const n = filtered().length;
       const active = query.trim() || typeFilter || gameFilter;
