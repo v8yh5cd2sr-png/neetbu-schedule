@@ -1,8 +1,22 @@
 [
-  {
-    "name": "メンバーの名前",
-    "emoji": "🔫",
-    "youtube": "https://www.youtube.com/@ここにハンドル名",
-    "x": "https://x.com/ここにID"
-  }
+  {"name": "KUN", "emoji": "🕶️", "color": "#333333", "youtube": "https://www.youtube.com/@kun4929", "x": "https://x.com/roadhog_kun"},
+  {"name": "この@あ", "emoji": "🔺", "color": "#FD1A21", "youtube": "https://www.youtube.com/@kono_a", "x": "https://x.com/kon0_a", "x2": "https://x.com/hystericobaka"},
+  {"name": "ヴェノム", "emoji": "🥼🃏", "color": "#825D4F", "youtube": "https://www.youtube.com/@Dr_VENOM", "x": "https://x.com/dr_venom_k110", "x2": "https://x.com/dr_venom_k111"},
+  {"name": "ひまじん", "emoji": "🌻", "color": "#41E161", "youtube": "https://www.youtube.com/channel/UCvis0drn9LLhcIv2bxXFkMA", "x": "https://x.com/h1maz1n1", "x2": "https://x.com/hi_mazin2"},
+  {"name": "陰キャ転生", "emoji": "⚡️", "color": "#FFE54E", "youtube": "https://www.youtube.com/channel/UCVre8TzUs7d_jIB__NpLlig", "x": "https://x.com/inkyatensei123"},
+  {"name": "できおこ", "emoji": "🦊", "color": "#DA701A", "youtube": "https://www.youtube.com/channel/UCqkVr4foJ0p32ENyjan1D6A", "x": "https://x.com/dekioko_", "x2": "https://x.com/aaaaaaaaa111825"},
+  {"name": "DD", "emoji": "🐒", "color": "#BA3148", "youtube": "https://www.youtube.com/channel/UCUsk4dew_a-ggPUK-wqGDAw", "x": "https://x.com/dd_neetclub"},
+  {"name": "うみにゃ", "emoji": "🌊🐈", "color": "#6BCBC5", "youtube": "https://www.youtube.com/channel/UCQ4RIKc78vqfX74a2jN90iw", "x": "https://x.com/uminya_"},
+  {"name": "ぺにがき", "emoji": "🐰", "color": "#B83E0D", "youtube": "https://www.youtube.com/channel/UCCmIWJsV7vJyBRsdDbBPJIA", "x": "https://x.com/peni_vl", "x2": "https://x.com/subgaki0141"},
+  {"name": "とーます", "emoji": "🚂", "color": "#665B7C", "youtube": "https://www.youtube.com/channel/UC8-nm5XKHvke2BcJFT78S5A", "x": "https://x.com/tomaskun_", "x2": "https://x.com/wasabi1431"},
+  {"name": "かえる", "emoji": "🐸", "color": "#C2E470", "youtube": "https://www.youtube.com/channel/UC6UlS_VwXeBk_APEN1KL-ew", "x": "https://x.com/caeru_3391"},
+  {"name": "らーば", "emoji": "💪", "color": "#697C69", "youtube": "https://www.youtube.com/channel/UC7eUm1cPbND2Lbv-uiZRLwg", "x": "https://x.com/larvaflog"},
+  {"name": "どるぴん", "emoji": "🐬", "color": "#FBECA7", "youtube": "https://www.youtube.com/channel/UChl23OBP1LeFt8kEWP7Nw3w", "x": "https://x.com/dolupin526", "x2": "https://x.com/subdolu526"},
+  {"name": "ウマヅラハギ", "emoji": "🐴", "color": "#583F1D", "youtube": "https://www.youtube.com/channel/UC17zvP06rrSnNPU52mj1LUw", "x": "https://x.com/umadurahagi_kun", "x2": "https://x.com/subdurahagi"},
+  {"name": "なっしー", "emoji": "🌀", "color": "#7C1410", "youtube": "https://www.youtube.com/channel/UCal2CgyHSVNH2FRjnDvY3bw", "x": "https://x.com/nassy_74_"},
+  {"name": "あーけん", "emoji": "🐣", "color": "#FFBFE0", "youtube": "https://www.youtube.com/channel/UCfe72fZggN2QYjGBxjTWR9w", "x": "https://x.com/akenn1549", "x2": "https://x.com/sub__1549"},
+  {"name": "うるんる", "emoji": "💧", "color": "#B1D7EF", "youtube": "https://www.youtube.com/channel/UChRVOCd19ij9XSIJsW2290Q", "x": "https://x.com/urn1o", "x2": "https://x.com/rnrn1o"},
+  {"name": "紅茶", "emoji": "🫖🎯", "color": "#41ABFC", "youtube": "https://www.youtube.com/channel/UCGSxqvDc9swtUpjN5SPJljQ", "x": "https://x.com/koucha748"},
+  {"name": "ヘルスカ", "emoji": "⛄️", "color": "#FFFFFF", "youtube": "https://www.youtube.com/channel/UCtHCNVxJdTqX9lZG57eN4Hg", "x": "https://x.com/helmur7"},
+  {"name": "のじゃじゃ", "emoji": "🐔", "color": "#C66A98", "youtube": "https://www.youtube.com/channel/UCK6oXwJWS1QIdLXswJMDsJA", "x": "https://x.com/rnojaja", "x2": "https://x.com/rnojaja_2kome"}
 ]
