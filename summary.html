@@ -35,6 +35,15 @@
     .row.first .bar i { background: var(--red); }
     .longest { font-size: 14px; line-height: 1.5; }
     .empty { text-align: center; color: var(--sub); padding: 24px 0; }
+
+    .rank { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .rank .no { width: 22px; font-size: 18px; font-weight: bold; color: var(--main); text-align: center; flex-shrink: 0; }
+    .rank:first-of-type .no { color: var(--red); }
+    .rank img { width: 96px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; background: var(--soft); flex-shrink: 0; }
+    .rank .t { font-size: 13px; line-height: 1.35; font-weight: bold; color: var(--text); }
+    .rank .m { font-size: 12px; color: var(--sub); margin-top: 2px; }
+    .rank .m b { color: var(--red); }
+    .tabsmall { display: flex; gap: 6px; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -48,15 +57,37 @@
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
     function fmtH(h) { return (Math.round(h * 10) / 10) + "h"; }
+    function thumbUrl(url) {
+      const m = url.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      return m ? `https://i.ytimg.com/vi/${m[1]}/mqdefault.jpg` : "";
+    }
 
     let videos = [];
     let year = "";
+    let rankType = "";
 
     function rows(entries, unit) {
       const max = Math.max(...entries.map(e => e[1]), 1);
       return entries.map((e, i) =>
         `<div class="row ${i === 0 ? "first" : ""}"><span class="n">${esc(e[0])}</span><span class="bar"><i style="width:${e[1] / max * 100}%"></i></span><span class="v">${unit(e[1])}</span></div>`
       ).join("");
+    }
+
+    function rankHtml(items) {
+      const list = items
+        .filter(v => (v.views || 0) > 0 && (!rankType || v.type === rankType))
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 5);
+      if (!list.length) return '<div class="empty">再生数のデータがありません</div>';
+      return list.map((v, i) => `
+        <div class="rank">
+          <div class="no">${i + 1}</div>
+          <a href="${esc(v.url)}" target="_blank"><img src="${thumbUrl(v.url)}" loading="lazy" alt=""></a>
+          <div>
+            <a class="t" href="${esc(v.url)}" target="_blank">${esc(v.title)}</a>
+            <div class="m"><b>${v.views.toLocaleString()}回</b> ・ ${esc(v.date)} ・ ${esc(v.type)}</div>
+          </div>
+        </div>`).join("");
     }
 
     function render() {
@@ -66,6 +97,7 @@
       const days = new Set(lives.map(v => v.date)).size;
       const shorts = items.filter(v => v.type === "ショート").length;
       const vids = items.filter(v => v.type === "動画").length;
+      const totalViews = items.reduce((s, v) => s + (v.views || 0), 0);
 
       if (!items.length) { document.getElementById("out").innerHTML = '<div class="empty">この年のデータはありません</div>'; return; }
 
@@ -103,6 +135,10 @@
         ? `<div class="longest">${fmtH(longest.hours)}（${esc(longest.date)}）<br><a href="${esc(longest.url)}" target="_blank">${esc(longest.title)}</a></div>`
         : "配信データなし";
 
+      const types = ["", "動画", "配信", "ショート"];
+      const typeBtns = types.map(t =>
+        `<button class="chip ${rankType === t ? "active" : ""}" data-r="${t}">${t || "すべて"}</button>`).join("");
+
       document.getElementById("out").innerHTML = `
         <div class="box"><div class="big">
           <div class="hot"><b>${fmtH(total)}</b><span>合計配信時間</span></div>
@@ -111,12 +147,25 @@
           <div><b>${lives.length ? fmtH(total / lives.length) : "–"}</b><span>1回の平均</span></div>
           <div><b>${vids}本</b><span>動画</span></div>
           <div><b>${shorts}本</b><span>ショート</span></div>
+          <div class="hot"><b>${totalViews.toLocaleString()}</b><span>合計再生数</span></div>
         </div></div>
+        <div class="box"><h2>🏆 いちばん再生された動画 TOP5</h2>
+          <div class="tabsmall" id="rankTabs">${typeBtns}</div>
+          <div id="rankList">${rankHtml(items)}</div>
+        </div>
         <div class="box"><h2>月ごとの配信時間（茶＝いちばん多い月：${topM + 1}月 ${fmtH(mh[topM])}）</h2><div class="months">${monthsHtml}</div></div>
         <div class="box"><h2>よく遊んだゲーム TOP5</h2>${topG.length ? rows(topG, fmtH) : "配信データなし"}</div>
         <div class="box"><h2>いちばん長かった配信</h2>${longestHtml}</div>
         <div class="box"><h2>曜日ごとの配信回数</h2>${rows(wEntries, n => n + "回")}</div>
         <div class="box"><h2>配信を始める時間帯</h2>${rows(Object.entries(tb), n => n + "回")}</div>`;
+
+      document.querySelectorAll("#rankTabs .chip").forEach(b => {
+        b.onclick = () => {
+          rankType = b.dataset.r;
+          document.querySelectorAll("#rankTabs .chip").forEach(x => x.classList.toggle("active", x === b));
+          document.getElementById("rankList").innerHTML = rankHtml(items);
+        };
+      });
     }
 
     function renderYears(list) {
