@@ -32,18 +32,15 @@ def is_viewpoint(name):
 def game_name(title, vtype=""):
     found = [clean(x) for x in re.findall(r"【(.+?)】", title)]
     if vtype == "配信":
-        # 最後の【】がゲーム名。1つだけでも視点でなければゲーム名
         if found and not is_viewpoint(found[-1]):
             return found[-1]
         return "雑談"
-    # 動画：最後のハイフン以降がゲーム名
     parts = re.split(r"\s*[-－―]\s*", title)
     if len(parts) >= 2:
         name = clean(parts[-1])
         name = re.sub(r"^【(.+)】$", r"\1", name)
         if name:
             return name
-    # ハイフンがなければ、視点でない最初の【】
     for f in found:
         if not is_viewpoint(f):
             return f
@@ -94,9 +91,10 @@ by_id = {vid_id(v["url"]): v for v in videos if vid_id(v["url"])}
 ids = list(by_id)
 for i in range(0, len(ids), 50):
     chunk = ids[i:i + 50]
-    data = api("videos", {"part": "contentDetails,liveStreamingDetails", "id": ",".join(chunk)})
+    data = api("videos", {"part": "contentDetails,liveStreamingDetails,statistics", "id": ",".join(chunk)})
     for item in data["items"]:
         v = by_id[item["id"]]
+        v["views"] = int(item.get("statistics", {}).get("viewCount", 0))
         live = item.get("liveStreamingDetails")
         if live:
             v["type"] = "配信"
@@ -114,7 +112,6 @@ for i in range(0, len(ids), 50):
             v["type"] = "動画"
 
 # ---- ゲーム名 ----
-# 手動の表記ゆれ設定（任意）。{"aliases": {"統一名": ["別表記", ...]}}
 try:
     with open("game_aliases.json", encoding="utf-8") as f:
         cfg = json.load(f)
@@ -126,12 +123,10 @@ for main, names in cfg.get("aliases", {}).items():
         alias[key(n)] = main
     alias[key(main)] = main
 
-# 1) まずルールで名前を出す
 for v in videos:
     if not v.get("game_fixed"):
         v["game"] = game_name(v["title"], v.get("type", ""))
 
-# 2) 大文字小文字・全角半角・空白の違いを、いちばん多い書き方に統一
 count = Counter(v["game"] for v in videos if v.get("game"))
 best = {}
 for name, n in count.items():
