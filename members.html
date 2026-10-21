@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🔫 ニート部 メンバー</title>
+  <style>
+    :root {
+      --bg: #fbf6e6; --main: #d4a72c; --soft: #f3e8bf;
+      --text: #3a3220; --sub: #8a7d5c; --red: #a8642a;
+    }
+    body { font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: var(--bg); color: var(--text); }
+    h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin: 0 0 8px; }
+    a { text-decoration: none; }
+    .back { display: block; margin-bottom: 12px; color: var(--red); font-size: 14px; }
+    .member { background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+    .name { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .links a { display: inline-block; padding: 6px 14px; border-radius: 16px; background: var(--soft); color: var(--red); font-size: 13px; font-weight: bold; }
+    .links a.yt { background: var(--main); color: #fff; }
+    .empty { text-align: center; color: var(--sub); padding: 24px 0; }
+  </style>
+</head>
+<body>
+  <h1>🔫 ニート部 メンバー</h1>
+  <a class="back" href="index.html">← 記録に戻る</a>
+  <div id="list">読み込み中...</div>
+
+  <script>
+    function esc(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    // http(s) で始まるリンクだけ許可（安全のため）
+    function safe(u) {
+      return /^https?:\/\//.test(u) ? esc(u) : "";
+    }
+
+    fetch("members.json")
+      .then(res => res.json())
+      .then(list => {
+        if (!list.length) { document.getElementById("list").innerHTML = '<div class="empty">まだメンバーが登録されていません</div>'; return; }
+        document.getElementById("list").innerHTML = list.map(m => {
+          const links = [];
+          if (safe(m.youtube || "")) links.push(`<a class="yt" href="${safe(m.youtube)}" target="_blank" rel="noopener">▶ YouTube</a>`);
+          if (safe(m.x || "")) links.push(`<a href="${safe(m.x)}" target="_blank" rel="noopener">𝕏 X</a>`);
+          if (safe(m.twitch || "")) links.push(`<a href="${safe(m.twitch)}" target="_blank" rel="noopener">Twitch</a>`);
+          if (safe(m.other || "")) links.push(`<a href="${safe(m.other)}" target="_blank" rel="noopener">リンク</a>`);
+          return `<div class="member"><div class="name">${esc(m.emoji || "")} ${esc(m.name)}</div><div class="links">${links.join("") || "リンク未登録"}</div></div>`;
+        }).join("");
+      })
+      .catch(() => { document.getElementById("list").textContent = "members.json を読み込めませんでした"; });
+  </script>
+</body>
+</html>
