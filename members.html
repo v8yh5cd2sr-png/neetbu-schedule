@@ -13,39 +13,42 @@
     h1 { font-size: 20px; border-bottom: 3px solid var(--red); display: inline-block; padding-bottom: 2px; margin: 0 0 8px; }
     a { text-decoration: none; }
     .back { display: block; margin-bottom: 12px; color: var(--red); font-size: 14px; }
-    .member { background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
-    .name { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
-    .links { display: flex; gap: 8px; flex-wrap: wrap; }
-    .links a { display: inline-block; padding: 6px 14px; border-radius: 16px; background: var(--soft); color: var(--red); font-size: 13px; font-weight: bold; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 420px) { .grid { grid-template-columns: 1fr; } }
+    .member { background: #fff; border-radius: 12px; padding: 10px 12px; border-left: 8px solid #ccc; box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset; }
+    .name { font-size: 15px; font-weight: bold; margin-bottom: 8px; }
+    .links { display: flex; gap: 6px; flex-wrap: wrap; }
+    .links a { display: inline-block; padding: 5px 12px; border-radius: 14px; background: var(--soft); color: var(--red); font-size: 12px; font-weight: bold; }
     .links a.yt { background: var(--main); color: #fff; }
+    .links a.sub { background: #fff; border: 1px solid var(--soft); color: var(--sub); font-weight: normal; }
     .empty { text-align: center; color: var(--sub); padding: 24px 0; }
   </style>
 </head>
 <body>
   <h1>🔫 ニート部 メンバー</h1>
   <a class="back" href="index.html">← 記録に戻る</a>
-  <div id="list">読み込み中...</div>
+  <div class="grid" id="list">読み込み中...</div>
 
   <script>
     function esc(s) {
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-    // http(s) で始まるリンクだけ許可（安全のため）
-    function safe(u) {
-      return /^https?:\/\//.test(u) ? esc(u) : "";
-    }
+    function safe(u) { return /^https?:\/\//.test(u || "") ? esc(u) : ""; }
+    function safeColor(c) { return /^#[0-9a-fA-F]{6}$/.test(c || "") ? c : "#cccccc"; }
 
     fetch("members.json")
       .then(res => res.json())
       .then(list => {
-        if (!list.length) { document.getElementById("list").innerHTML = '<div class="empty">まだメンバーが登録されていません</div>'; return; }
-        document.getElementById("list").innerHTML = list.map(m => {
+        const box = document.getElementById("list");
+        if (!list.length) { box.innerHTML = '<div class="empty">まだメンバーが登録されていません</div>'; return; }
+        box.innerHTML = list.map(m => {
           const links = [];
-          if (safe(m.youtube || "")) links.push(`<a class="yt" href="${safe(m.youtube)}" target="_blank" rel="noopener">▶ YouTube</a>`);
-          if (safe(m.x || "")) links.push(`<a href="${safe(m.x)}" target="_blank" rel="noopener">𝕏 X</a>`);
-          if (safe(m.twitch || "")) links.push(`<a href="${safe(m.twitch)}" target="_blank" rel="noopener">Twitch</a>`);
-          if (safe(m.other || "")) links.push(`<a href="${safe(m.other)}" target="_blank" rel="noopener">リンク</a>`);
-          return `<div class="member"><div class="name">${esc(m.emoji || "")} ${esc(m.name)}</div><div class="links">${links.join("") || "リンク未登録"}</div></div>`;
+          if (safe(m.youtube)) links.push(`<a class="yt" href="${safe(m.youtube)}" target="_blank" rel="noopener">▶ YouTube</a>`);
+          if (safe(m.x)) links.push(`<a href="${safe(m.x)}" target="_blank" rel="noopener">𝕏 X</a>`);
+          if (safe(m.x2)) links.push(`<a class="sub" href="${safe(m.x2)}" target="_blank" rel="noopener">𝕏 サブ</a>`);
+          if (safe(m.twitch)) links.push(`<a href="${safe(m.twitch)}" target="_blank" rel="noopener">Twitch</a>`);
+          if (safe(m.other)) links.push(`<a href="${safe(m.other)}" target="_blank" rel="noopener">リンク</a>`);
+          return `<div class="member" style="border-left-color:${safeColor(m.color)}"><div class="name">${esc(m.emoji || "")} ${esc(m.name)}</div><div class="links">${links.join("") || "リンク未登録"}</div></div>`;
         }).join("");
       })
       .catch(() => { document.getElementById("list").textContent = "members.json を読み込めませんでした"; });
